@@ -70,21 +70,34 @@ NOT be considered complete.
 Each feature MUST have its own branch linked to its specification, plan, and tasks. Every
 commit on that branch MUST represent a coherent part of that feature; unrelated work MUST
 use a separate feature branch. Commit messages and branch names MUST follow human-approved,
-machine-validated conventions. Each commit MUST retain a passing validation state. Feature
-completion MUST include traceability from acceptance criteria to commits and test evidence.
+machine-validated conventions. Each commit MUST pass the applicable local validation gates.
+Feature completion MUST include traceability from acceptance criteria to commits and test evidence.
 
-### VI. Local Validation Before Every Commit and Push
+### VI. Automated Quality Gates
 
-Every commit and every push MUST be validated locally before the operation completes. Required
-checks MUST include code validation, code linting, a production build, typo and spelling
-verification, commit-message linting, branch-name linting, and all required feature,
-integration, and end-to-end tests. Code validation MUST include type checking where the
-approved language and tooling support it. Any failing or missing required check MUST block
-the operation. Local enforcement MUST NOT be bypassed to deliver a feature.
+The project MUST enforce automated quality gates both locally and in CI.
 
-CI MUST repeat the required checks for the revision being delivered. Deployment to the public
-website MUST require passing results for that revision. Checks MUST be reproducible through
-documented commands, and exceptions MUST NOT be introduced silently.
+Local Git hooks MUST provide fast feedback and prevent common quality violations without
+imposing the full validation cost on every commit.
+
+Pre-commit hooks SHOULD run fast checks such as branch-name validation, linting, formatting
+validation, and spelling checks. This keeps feedback fast while CI independently enforces
+complete merge validation.
+
+Commit-message validation MUST run through a commit-msg hook.
+
+Pre-push hooks MUST run appropriate static/type validation and unit/integration tests.
+
+Expensive validation, including production builds and end-to-end browser tests, MUST run in
+CI before changes are eligible to merge into protected branches.
+
+Local hooks MUST NOT be considered the authoritative enforcement layer because they can be
+bypassed.
+
+CI MUST independently enforce all mandatory quality gates required for merge.
+
+The complete validation suite MUST be executable locally through a documented command when
+a developer wants to reproduce CI validation before opening or updating a Pull Request.
 
 ### VII. Portfolio Quality and Affordable Learning
 
@@ -140,12 +153,15 @@ MUST be acceptance criteria of pipeline features.
    write the relevant tests first, observe the expected failure, implement, and verify success.
 4. Update code documentation and operational instructions with each behavior change. Compare
    components against the approved design and retain acceptance evidence.
-5. Before every commit, run the required local checks, including linting of the proposed
-   commit message and current branch name. Commit only the validated changes.
-6. Before every push, rerun the required checks on the state being pushed and validate every
-   outgoing commit message. A new change invalidates earlier validation of the changed state.
-7. Require passing CI checks for the exact deployment revision before publishing it to the
-   website. For pipeline features, follow the guided, owner-built process in Principle VIII.
+5. Before every commit, run the applicable fast local gates under Principle VI and validate
+   the proposed commit message through the commit-msg hook. Commit only validated changes.
+6. Before every push, run appropriate static/type validation and unit/integration tests on
+   the state being pushed. Validate outgoing commit messages against the approved conventions.
+   A new change invalidates earlier validation of the changed state.
+7. Require independent CI validation of all mandatory merge gates, including production
+   build and end-to-end browser tests, before changes merge into protected branches. Require
+   passing CI checks for the exact deployment revision before publishing it to the website.
+   For pipeline features, follow the guided, owner-built process in Principle VIII.
 8. Review the feature against its specification, plan, tests, documentation, design, costs,
    and this constitution before declaring it complete.
 
@@ -170,4 +186,4 @@ Sync Impact Report MUST be reviewed and removed before committing the constituti
 TODO(RATIFICATION_DATE): The owner must confirm the original adoption date. Version 1.0.0
 records the initial rules supplied by the owner; the adoption date remains unconfirmed.
 
-**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2026-10-17
+**Version**: 2.0.0 | **Ratified**: TODO(RATIFICATION_DATE) | **Last Amended**: 2026-10-17
