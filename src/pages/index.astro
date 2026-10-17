@@ -1,0 +1,16 @@
+---
+// Design Baseline v3: the full heading/message/link group is centered as a single unit.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LinkedInLink from '../components/LinkedInLink.astro';
+import { wipContent } from '../content/wip';
+---
+
+<BaseLayout>
+  <main>
+    <div data-wip-group>
+      <h1>{wipContent.heading}</h1>
+      <p>{wipContent.message}</p>
+      <LinkedInLink />
+    </div>
+  </main>
+</BaseLayout>

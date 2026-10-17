@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Foundation test reports and checkout-local tooling
+playwright-report/
+test-results/
+mise.local.toml
+.mise.local.toml
+lefthook-local.yml
+.DS_Store
+Thumbs.db

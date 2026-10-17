@@ -1,0 +1,30 @@
+---
+// Native href remains usable without scripts; decoration never replaces the accessible name.
+import LinkedInIcon from '../assets/linkedin.svg';
+import { siteIdentity } from '../content/site';
+---
+
+<a
+  class="linkedin-link"
+  data-linkedin-link
+  href={siteIdentity.linkedInUrl}
+  aria-label={`${siteIdentity.ownerName} on LinkedIn`}
+>
+  <span class="linkedin-particles" data-particles aria-hidden="true"></span>
+  <LinkedInIcon
+    class="linkedin-icon"
+    width="24"
+    height="24"
+    aria-hidden="true"
+    focusable="false"
+  />
+  <span class="linkedin-rocket" data-rocket aria-hidden="true">
+    🚀
+  </span>
+  <span class="sr-only" data-launch-status role="status"></span>
+</a>
+
+<script>
+  import { enhanceLinkedInLinks } from '../scripts/linkedin-link';
+  enhanceLinkedInLinks();
+</script>

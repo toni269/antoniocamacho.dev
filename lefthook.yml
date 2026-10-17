@@ -1,0 +1,15 @@
+lefthook: node scripts/run-lefthook.mjs
+# Fast feedback locally; future CI must enforce every gate independently.
+pre-commit:
+  commands:
+    quality:
+      run: npm run check:runtime && npm run lint:branch && npm run check:staged
+commit-msg:
+  commands:
+    message:
+      run: npm run lint:commits -- --edit "{1}"
+pre-push:
+  commands:
+    quality:
+      use_stdin: true
+      run: npm run check:push-commits -- "{1}" && npm run lint:branch && npm run check:types && npm test
