@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+coverage/
+playwright-report/
+test-results/
+package-lock.json
+.specify/
+.agents/
+# Checklist ownership and executable task IDs must be preserved by implementation.
+specs/**/checklists/
+specs/**/tasks.md

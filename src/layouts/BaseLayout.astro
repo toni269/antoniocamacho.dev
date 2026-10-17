@@ -1,0 +1,23 @@
+---
+// Static document shell; identity is shared with the visible link; motion is enhanced by its own component.
+import '../styles/global.css';
+import { siteIdentity } from '../content/site';
+import {
+  buildStructuredData,
+  serializeStructuredData,
+} from '../lib/structured-data';
+const graph = serializeStructuredData(buildStructuredData(siteIdentity));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WIP | {siteIdentity.siteName}</title>
+    <script type="application/ld+json" set:html={graph} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

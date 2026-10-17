@@ -1,0 +1,238 @@
+@import 'tailwindcss';
+
+/* Approved foundation values only; future Penpot tokens need their own reviewed design. */
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  --page-background: #000;
+  --page-foreground: #fff;
+  --profile-link-color: #0a66c2;
+  --profile-halo-opacity: 0.28;
+  --profile-halo-hover-opacity: 0.44;
+  --profile-link-hover-color: #2992fa;
+  --profile-particle-opacity: 1;
+  --profile-particle-glow: 0 0 6px rgb(10 102 194 / 60%);
+  --content-gap: 1rem;
+  --heading-message-gap: 0.5rem;
+  --page-padding: 1.5rem;
+}
+/* Follow browser preference using the same semantic tokens, including keyboard focus. */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --page-background: #fff;
+    --page-foreground: #000;
+    --profile-halo-opacity: 0.14;
+    --profile-halo-hover-opacity: 0.2;
+    --profile-link-hover-color: #0a66c2;
+    --profile-particle-opacity: 0.7;
+    --profile-particle-glow: none;
+  }
+}
+body {
+  margin: 0;
+  background: var(--page-background);
+  color: var(--page-foreground);
+}
+/* Auto margins center when space permits, and keep enlarged content reachable when it does not. */
+main {
+  min-height: 100svh;
+  padding: var(--page-padding);
+  display: flex;
+  background: var(--page-background);
+  color: var(--page-foreground);
+}
+[data-wip-group] {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+h1 {
+  margin: 0;
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+p {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+/* Separate the close heading/message pair from the more spacious profile link. */
+[data-wip-group] > p {
+  margin-block-start: var(--heading-message-gap);
+}
+a {
+  color: inherit;
+  display: inline-flex;
+}
+.linkedin-link {
+  position: relative;
+  isolation: isolate;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-block-start: var(--content-gap);
+  color: var(--profile-link-color);
+}
+a:focus-visible {
+  outline: 2px solid var(--page-foreground);
+  outline-offset: 4px;
+}
+
+/* The paragraph defines the group's intrinsic width; fit the real heading text to it.
+   Keep the larger fallback for browsers without native text fitting, without client JS. */
+@supports (text-fit: grow) {
+  h1 {
+    contain: inline-size;
+    align-self: stretch;
+    width: 100%;
+    font-size: 1rem;
+    text-fit: grow;
+    white-space: nowrap;
+  }
+}
+
+/* Repeating invitation: six dots converge into the real, stationary circular hit area. */
+.linkedin-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--profile-link-color);
+  opacity: var(--profile-halo-opacity);
+  pointer-events: none;
+}
+.linkedin-link[data-motion='active']::before {
+  animation: halo-form 3.3s ease-in-out infinite both;
+}
+.linkedin-link[data-motion='active'] .linkedin-icon {
+  animation: icon-invitation 1.6s ease-in-out infinite;
+}
+.linkedin-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+[data-particle] {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  margin: calc(var(--dot-size) / -2);
+  border-radius: 50%;
+  background: var(--profile-link-color);
+  filter: blur(0.5px);
+  box-shadow: var(--profile-particle-glow);
+  animation: particle-gather var(--gather-duration) ease-in-out
+    var(--gather-delay) infinite both;
+}
+.linkedin-rocket {
+  display: none;
+  font-size: 26px;
+  line-height: 1;
+}
+.linkedin-link[data-launching='true'] .linkedin-icon {
+  visibility: hidden;
+  animation: none;
+}
+.linkedin-link[data-launching='true'] .linkedin-rocket {
+  position: absolute;
+  display: block;
+  animation: rocket-launch 600ms ease-out both;
+}
+.linkedin-link[data-launching='true'] .linkedin-particles {
+  visibility: hidden;
+}
+@keyframes icon-invitation {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  35% {
+    transform: translateY(-2px) rotate(-4deg);
+  }
+  65% {
+    transform: translateY(-2px) rotate(4deg);
+  }
+}
+@keyframes particle-gather {
+  0% {
+    opacity: 0;
+    transform: translate(var(--from-x), var(--from-y)) scale(0.5);
+  }
+  20% {
+    opacity: var(--profile-particle-opacity);
+  }
+  45% {
+    opacity: calc(var(--profile-particle-opacity) * 0.7);
+  }
+  /* Fade the merged dots before they can obscure the identically blue icon. */
+  70%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(2.5);
+  }
+}
+@keyframes halo-form {
+  0%,
+  100% {
+    opacity: calc(var(--profile-halo-opacity) * 0.25);
+    transform: scale(0.65);
+  }
+  50%,
+  75% {
+    opacity: var(--profile-halo-opacity);
+    transform: scale(1);
+  }
+}
+/* Hover boosts contrast without stopping the invitation. */
+.linkedin-link:hover {
+  --profile-link-color: var(--profile-link-hover-color);
+  --profile-halo-opacity: var(--profile-halo-hover-opacity);
+  --profile-particle-opacity: 1;
+  --profile-particle-glow: 0 0 9px var(--profile-link-color);
+}
+/* Keep keyboard focus and launch feedback calm; hovering alone never pauses. */
+.linkedin-link:is(:focus-visible, [data-launching='true'])::before,
+.linkedin-link:is(:focus-visible, [data-launching='true']) .linkedin-icon,
+.linkedin-link:is(:focus-visible, [data-launching='true']) [data-particle] {
+  animation-play-state: paused;
+}
+@keyframes rocket-launch {
+  from {
+    opacity: 0;
+    transform: translateY(3px) scale(0.7);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-4px) scale(1);
+  }
+}
+/* Also cover preference changes before/without script execution. */
+@media (prefers-reduced-motion: reduce) {
+  .linkedin-link::before,
+  .linkedin-icon,
+  .linkedin-rocket {
+    animation: none !important;
+  }
+  .linkedin-particles {
+    display: none;
+  }
+}

@@ -1,0 +1,3 @@
+# Exact contributor/CI runtime; npm is the version bundled with this Node release.
+[tools]
+node = "24.22.0"
