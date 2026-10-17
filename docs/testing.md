@@ -212,7 +212,26 @@ hover now keeps that blue and uses a softer 0.20 halo instead of 0.26. Screensho
 confirmed the cleaner blue tint; all 27 E2E cases, lint, formatting and spelling passed.
 Dark-mode styling and continuous hover motion are preserved.
 
-## Commit traceability
+## Nested pre-push fixture isolation (T058)
+
+The reported failure was reproduced by inheriting `LEFTHOOK_BIN` from a parent hook.
+That selector bypassed the child repository's configured runner, allowing Lefthook to
+hide unstaged edits and making the partial-staging rejection assertion fail. The
+regression now injects that selector explicitly. Two additional isolation tests
+failed before the fix: inherited selectors remained present, and nested Git commands
+targeted a disposable parent repository instead of their own fixture.
+
+Fixture subprocesses now receive a copied environment with Git repository-local
+variables and Lefthook control variables removed. Runtime paths remain available;
+the real hook environment and enforcement policy are unchanged.
+
+After the fix, all eight focused integration tests passed. Invoking the actual
+`.git/hooks/pre-push` with empty input passed branch validation, static/type checks
+and all 27 unit/integration tests across 12 files. Empty input deliberately supplies
+no outgoing refs: this verifies nested hook execution without contacting or pushing
+to a remote. Lint also passed. Application behavior was not changed.
+
+## Foundation commit traceability
 
 At the owner request, `feat(foundation): add WIP page and local quality gates` groups the
 complete foundation feature: FR-001–FR-012, SC-001–SC-008 and T001–T057, including the

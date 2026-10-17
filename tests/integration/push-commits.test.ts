@@ -49,7 +49,7 @@ it('checks every first-push message, not just the valid last commit, and all upd
       '--to',
       good,
     ],
-    { cwd: repo.cwd, encoding: 'utf8' },
+    { cwd: repo.cwd, env: repo.env, encoding: 'utf8' },
   );
   expect(range.status).toBe(0);
 });

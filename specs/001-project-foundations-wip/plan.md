@@ -508,3 +508,13 @@ and intensify blue/glow. Use a brighter blue on dark (`#2992FA`) and retain the 
 Light-hover review: the owner disliked the muddy light-mode hover. Keep the original
 LinkedIn blue and soften its halo to 0.20 opacity, preserving moving/intensified hover
 and the stronger dark theme. Update the existing visual assertion before changing CSS.
+
+### Nested pre-push test environment correction
+
+A real pre-push exports `LEFTHOOK_BIN`, which overrides generated child hook runner commands.
+Disposable test repositories must not inherit those Lefthook selectors or Git repository-local
+variables. `tests/helpers/git.ts` copies the environment, removes Git local variables reported
+by `git rev-parse --local-env-vars` and Lefthook control variables, and passes that copy to all
+fixture Git/tool subprocesses. Preserve runtime PATH; never modify the real hook environment.
+Regression tests inject the parent executable and a separate temporary parent Git context.
+The existing gate policy and application behavior remain unchanged.

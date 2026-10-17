@@ -2,8 +2,10 @@
 import { copyFileSync, cpSync, readFileSync, unlinkSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { expect, it } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { repository, installedTools, root } from '../helpers/git';
+
+afterEach(() => vi.unstubAllEnvs());
 
 /** Controlled npm stages preserve real Lefthook boundaries without recursively running this suite. */
 function hookFixture() {
@@ -54,11 +56,16 @@ function hookFixture() {
   spawnSync(
     process.execPath,
     [resolve(root, 'node_modules/lefthook/bin/index.js'), 'install'],
-    { cwd: repo.cwd, encoding: 'utf8' },
+    { cwd: repo.cwd, env: repo.env, encoding: 'utf8' },
   );
   return repo;
 }
 it('actual pre-commit and commit-msg hooks reject defects and allow a clean Conventional Commit', () => {
+  // A parent pre-push exports its executable; child repositories must use their own runner.
+  vi.stubEnv(
+    'LEFTHOOK_BIN',
+    resolve(root, 'node_modules/lefthook/bin/index.js'),
+  );
   const repo = hookFixture();
   for (const [path, source] of [
     ['bad.mjs', 'missingName();\n'],
@@ -111,11 +118,13 @@ it('actual pre-push hooks block types and scoped unit/integration failures and p
   const tree = repo.git('rev-parse', 'HEAD^{tree}').stdout.trim();
   const bad = spawnSync('git', ['commit-tree', tree, '-p', parent], {
     cwd: repo.cwd,
+    env: repo.env,
     input: 'invalid outgoing message\n',
     encoding: 'utf8',
   }).stdout.trim();
   const good = spawnSync('git', ['commit-tree', tree, '-p', bad], {
     cwd: repo.cwd,
+    env: repo.env,
     input: 'feat: valid final outgoing message\n',
     encoding: 'utf8',
   }).stdout.trim();
@@ -153,7 +162,7 @@ it('aggregate scripts preserve order, stop on failure and build only in the full
   const run = (name: string, fail = '') =>
     spawnSync('npm', ['run', name], {
       cwd: repo.cwd,
-      env: { ...process.env, FAIL_STAGE: fail },
+      env: { ...repo.env, FAIL_STAGE: fail },
       encoding: 'utf8',
     });
   expect(run('quality:full').status).toBe(0);

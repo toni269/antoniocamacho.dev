@@ -312,3 +312,5 @@ generation command does not launch parallel agents or execute implementation.
 - [X] T056 Implement the explicitly approved interactive LinkedIn link: write and observe meaningful unit/integration/E2E failures, add six randomized gathering dots and stationary 44px hit area with repeating decorative sway, stronger dark visibility and uninterrupted intensified hover in both themes, show a rocket for 600ms before a single native-destination navigation, preserve modified/no-JS/keyboard behavior and reduced motion, validate both themes and the resource budget, and document the small client module.
 
 - [X] T057 Refine the disliked light-mode hover: retain the approved blue with a softer halo, observe the old navy color fail the existing visual assertion, then validate both themes and record screenshot review.
+
+- [X] T058 Fix inherited pre-push environment contamination in temporary Git/hook fixtures; reproduce the partial-staging acceptance failure, add environment/foreign-repository regression cases, isolate all fixture subprocesses, and validate the real hook path without pushing to a remote.
