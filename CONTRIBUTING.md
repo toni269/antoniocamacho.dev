@@ -20,13 +20,13 @@ coverage with meaningless assertions. Compare components with the approved desig
 
 ## Local checks
 
-| Stage          | Checks                                                          |
-| -------------- | --------------------------------------------------------------- |
-| pre-commit     | Exact runtime, branch, applicable staged ESLint/Prettier/CSpell |
-| commit-msg     | Commitlint on the proposed message file                         |
-| pre-push       | Branch, static/types, Vitest, every outgoing commit message     |
-| `quality`      | Runtime, branch, full lint/format/spelling/types/Vitest         |
-| `quality:full` | `quality`, production build, built-site Playwright              |
+| Stage          | Checks                                                                     |
+| -------------- | -------------------------------------------------------------------------- |
+| pre-commit     | Exact runtime, branch, applicable staged ESLint/Prettier/CSpell            |
+| commit-msg     | Commitlint on the proposed message file                                    |
+| pre-push       | Exact runtime, branch, static/types, Vitest, every outgoing commit message |
+| `quality`      | Runtime, branch, full lint/format/spelling/types/Vitest                    |
+| `quality:full` | `quality`, production build, built-site Playwright                         |
 
 Hooks never format, add, stash or rewrite your files. If a path has both staged and unstaged
 edits, commit checks reject it: stage the complete intended file or separate the edits yourself,

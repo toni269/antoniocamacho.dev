@@ -329,12 +329,12 @@ pretend the last commit is the complete PR. Fail fast and propagate command exit
 
 ### Intended Git hook behavior — approved gate placement
 
-| Hook              | Requested design                                                           | Current governance status                          |
-| ----------------- | -------------------------------------------------------------------------- | -------------------------------------------------- |
-| pre-commit        | Runtime/branch validation; staged ESLint, Prettier check, practical CSpell | Compliant with constitution 2.0.0 and aligned spec |
-| commit-msg        | Commitlint `--edit` with supplied message-file path                        | Compatible by itself                               |
-| pre-push          | Branch, full Astro/tooling types, Vitest and all outgoing commit messages  | Compliant with constitution 2.0.0 and aligned spec |
-| CI, later feature | Full independent validation plus coverage/build/Playwright                 | Required future boundary; not installed now        |
+| Hook              | Requested design                                                                         | Current governance status                          |
+| ----------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| pre-commit        | Runtime/branch validation; staged ESLint, Prettier check, practical CSpell               | Compliant with constitution 2.0.0 and aligned spec |
+| commit-msg        | Commitlint `--edit` with supplied message-file path                                      | Compatible by itself                               |
+| pre-push          | Exact runtime, branch, full Astro/tooling types, Vitest and all outgoing commit messages | Compliant with constitution 2.0.0 and aligned spec |
+| CI, later feature | Full independent validation plus coverage/build/Playwright                               | Required future boundary; not installed now        |
 
 Branch script accepts exactly `main`, `develop`, or
 `^(feat|fix|docs|test|ci|refactor|chore|perf|build)/[a-z0-9-]+$`. Do not silently impose a stricter
@@ -518,3 +518,12 @@ by `git rev-parse --local-env-vars` and Lefthook control variables, and passes t
 fixture Git/tool subprocesses. Preserve runtime PATH; never modify the real hook environment.
 Regression tests inject the parent executable and a separate temporary parent Git context.
 The existing gate policy and application behavior remain unchanged.
+
+### Pre-push runtime diagnosis
+
+The approved exact Node pin also applies to pushes. Run `check:runtime` first in
+pre-push so an incompatible shell fails with mise remediation before nested hook tests.
+Do not relax the runtime pin or adjust fixtures to accept the wrong runtime. Exercise
+this boundary in the real temporary hook fixture by changing its pin, observing a
+rejection with the runtime diagnostic, and restoring the approved pin for valid cases.
+Include captured hook output when asserting a clean fixture commit succeeds.

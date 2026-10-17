@@ -314,3 +314,5 @@ generation command does not launch parallel agents or execute implementation.
 - [X] T057 Refine the disliked light-mode hover: retain the approved blue with a softer halo, observe the old navy color fail the existing visual assertion, then validate both themes and record screenshot review.
 
 - [X] T058 Fix inherited pre-push environment contamination in temporary Git/hook fixtures; reproduce the partial-staging acceptance failure, add environment/foreign-repository regression cases, isolate all fixture subprocesses, and validate the real hook path without pushing to a remote.
+
+- [X] T059 Enforce the approved exact runtime at the start of pre-push, reproduce a runtime-mismatched local push incorrectly passing before the guard, retain real hook output in clean-commit assertions, verify matching and mismatched runtime paths, and document mise recovery without changing the runtime pin or pushing to the real remote.

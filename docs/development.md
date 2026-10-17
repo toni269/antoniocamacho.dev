@@ -42,6 +42,12 @@ source archives skip hook installation; CI skips local hook installation explici
 independent validation commands remain available. No undocumented absolute machine paths
 are embedded in project scripts.
 
+Pre-push checks the exact runtime before outgoing messages, types or tests. If a shell
+still selects another Node installation, check `node --version` against `mise.toml`.
+Run `mise install`, then `mise exec -- npm run check:runtime` and
+`mise exec -- git push` when ready to push. This also passes the pinned runtime to
+the hooks; it does not bypass them. Do not change the project pin to match a local default.
+
 Browser binaries are installed explicitly with `npm run test:e2e:install`. On supported Linux,
 `-- --with-deps` also requests required system libraries; follow Playwright's printed diagnosis
 if unavailable. macOS and WSL2 are supported targets, but only the recorded Linux environment

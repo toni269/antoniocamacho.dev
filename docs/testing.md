@@ -231,7 +231,26 @@ and all 27 unit/integration tests across 12 files. Empty input deliberately supp
 no outgoing refs: this verifies nested hook execution without contacting or pushing
 to a remote. Lint also passed. Application behavior was not changed.
 
-## Foundation commit traceability
+## Exact runtime before pre-push tests (T059)
+
+The repeated report was reproduced using the shell's Node 24.19.0: the clean commit
+assertion failed after about 1.4 seconds because its real pre-commit runtime gate
+requires Node 24.22.0. With the approved runtime, that same test passed. This is a
+separate cause from T058; fixture isolation alone cannot make an incompatible runtime valid.
+Clean-commit assertions now include captured hook output to expose the actual failure.
+
+Before the guard was implemented, a new real-hook assertion observed a successful
+push to a disposable local remote despite an intentionally incompatible fixture pin.
+After adding `check:runtime` first in pre-push, all three hook tests passed, including
+runtime rejection before outgoing-message/type checks and a valid local push.
+The real checkout hook also rejected Node 24.19.0 immediately with the expected pin
+and mise recovery instructions. These checks do not push to the real remote.
+Invoking the real pre-push hook with empty ref input under Node 24.22.0 passed
+runtime/branch validation, static/types with zero diagnostics and all 27 tests across
+12 files. Lint, formatting and spelling also passed. Empty ref input avoids remote
+access; outgoing-message enforcement is exercised by the disposable-remote tests.
+
+## Foundation feature commit traceability
 
 At the owner request, `feat(foundation): add WIP page and local quality gates` groups the
 complete foundation feature: FR-001–FR-012, SC-001–SC-008 and T001–T057, including the

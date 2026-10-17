@@ -88,7 +88,8 @@ it('actual pre-commit and commit-msg hooks reject defects and allow a clean Conv
   expect(repo.git('commit', '-m', 'docs: missing tools').status).not.toBe(0);
   installedTools(repo.cwd);
   expect(repo.git('commit', '-m', 'invalid message').status).not.toBe(0);
-  expect(repo.git('commit', '-m', 'docs: valid fixture').status).toBe(0);
+  const clean = repo.git('commit', '-m', 'docs: valid fixture');
+  expect(clean.status, clean.stdout + clean.stderr).toBe(0);
   repo.git('checkout', '-b', 'invalid_branch');
   repo.write('more.md', 'Documentation.\n');
   repo.git('add', 'more.md');
@@ -99,6 +100,18 @@ it('actual pre-push hooks block types and scoped unit/integration failures and p
   const remote = repository();
   remote.git('init', '--bare', remote.cwd + '/remote.git');
   repo.git('remote', 'add', 'origin', remote.cwd + '/remote.git');
+  // A wrong runtime must fail before type/tests can obscure the actionable diagnosis.
+  const pin = readFileSync(join(repo.cwd, 'mise.toml'), 'utf8');
+  repo.write('mise.toml', '[tools]\nnode = "0.0.0"\n');
+  const mismatch = repo.git('push', 'origin', 'HEAD:refs/heads/feat/fixture');
+  expect(mismatch.status, mismatch.stdout + mismatch.stderr).not.toBe(0);
+  expect(mismatch.stdout + mismatch.stderr).toContain('Expected Node 0.0.0');
+  expect(mismatch.stdout + mismatch.stderr).toContain('mise');
+  expect(mismatch.stdout + mismatch.stderr).not.toContain('> check:types');
+  expect(mismatch.stdout + mismatch.stderr).not.toContain(
+    '> check:push-commits',
+  );
+  repo.write('mise.toml', pin);
   for (const stage of ['types', 'test']) {
     repo.write(`fail-${stage}`, 'fixture failure');
     const result = repo.git('push', 'origin', 'HEAD:refs/heads/feat/fixture');

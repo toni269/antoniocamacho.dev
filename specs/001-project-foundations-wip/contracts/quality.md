@@ -32,14 +32,14 @@ check. No automatic formatting, `git add`, stash mutation, commit, or push is pe
 
 ## Gate placement proposed under Constitution 2.0.0
 
-| Boundary                         | Required proposed checks                                                                           |
-| -------------------------------- | -------------------------------------------------------------------------------------------------- |
-| pre-commit                       | Runtime, branch; staged ESLint, Prettier check and practical CSpell                                |
-| commit-msg                       | Commitlint on supplied message file                                                                |
-| pre-push                         | Branch, Astro/tooling static types, Vitest unit/integration, outgoing commit messages              |
-| `quality`                        | Runtime, branch, full lint/format/spelling/types/Vitest; excludes E2E/build                        |
-| `quality:full`                   | `quality`, production build, E2E against the built artifact                                        |
-| Future CI before protected merge | Independent branch/range checks, full lint/format/spelling/types, Vitest with coverage, build, E2E |
+| Boundary                         | Required proposed checks                                                                             |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| pre-commit                       | Runtime, branch; staged ESLint, Prettier check and practical CSpell                                  |
+| commit-msg                       | Commitlint on supplied message file                                                                  |
+| pre-push                         | Exact runtime, branch, Astro/tooling static types, Vitest unit/integration, outgoing commit messages |
+| `quality`                        | Runtime, branch, full lint/format/spelling/types/Vitest; excludes E2E/build                          |
+| `quality:full`                   | `quality`, production build, E2E against the built artifact                                          |
+| Future CI before protected merge | Independent branch/range checks, full lint/format/spelling/types, Vitest with coverage, build, E2E   |
 
 Full validation remains manually executable without forcing it into each commit/push.
 Future CI may use separate steps to reuse artifacts instead of literally invoking the
